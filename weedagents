@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+#
+# weedagents: search & destroy dead ssh-agent sockets
+#
+
+require 'socket'
+
+Dir.entries('/tmp').
+    grep(/^ssh-\w+/).
+    map { |e| "/tmp/#{e}" }.
+    find_all { |e|
+        s = File.stat(e)
+        s.directory? && s.executable?
+    }.each { |e|
+        Dir.entries(e).grep(/^agent.\d+$/).
+            map { |s| "#{e}/#{s}" }.
+            each { |s| # there should be only one
+                begin
+                    c = UNIXSocket.open(s)
+                rescue
+                    warn("#{s} is dead; remove it")
+                    begin
+                        File.unlink(s) && Dir.rmdir(e)
+                    rescue
+                        warn("rmdir #{s} failed: #{$!}")
+                    end
+                end
+            }
+    }
