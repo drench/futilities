@@ -1,0 +1,81 @@
+#!/usr/bin/env perl
+
+# This is public domain software.
+# More info: http://dren.ch/apache-config-finder/
+
+use strict;
+
+use Fcntl 'O_RDONLY';
+
+my $HTTPD_INFO = get_httpd_info();
+
+sub find_httpd {
+	my @pd = (split(':', $ENV{PATH}),
+		qw(/usr/sbin /usr/local/apache2/bin /usr/local/apache/bin
+		/opt/local/sbin /opt/local/apache2/bin /opt/local/apache/bin));
+
+	for (@pd) {
+		return "$_/httpd" if -x "$_/httpd";
+		return "$_/apache" if -x "$_/apache";
+		return "$_/apache2" if -x "$_/apache2";
+	}
+
+	die "Unable to find httpd in @pd\n";
+}
+
+sub get_root {
+	my $httpd = find_httpd();
+	die $httpd;
+}
+
+sub get_httpd_info {
+	my $httpd = find_httpd();
+
+	my $pid = open(my $h, '-|');
+	die "Can't fork: $!" unless defined $pid;
+
+	if ($pid) { # parent
+		my %inf;
+		while (<$h>) {
+			if (m{-D\s+([A-Z_]+)="(.+)"}) {
+				$inf{$1} = $2;
+			}
+		}
+		close($h) || die "close: $!";
+		return \%inf;
+	}
+	else {
+		exec($httpd, '-V');
+	}
+}
+
+sub get_includes {
+	my $f = shift;
+	my @incs = ($f);
+	if (sysopen(my $h, $f, O_RDONLY)) {
+		while(<$h>) {
+			if (/^\s*Include\s+"?(.+?)"?$/i) {
+				my $c = $1;
+				if ($c !~ m{^/}) {
+					$c = "$HTTPD_INFO->{HTTPD_ROOT}/$c";
+				}
+				for (glob($c)) {
+					push @incs, get_includes($_);
+				}
+			}
+		}
+	}
+	else {
+		warn "open $f: $!\n";
+	}
+	return @incs;
+}
+
+my $conf = $HTTPD_INFO->{SERVER_CONFIG_FILE};
+if ($conf !~ m{^/}) {
+	$conf = "$HTTPD_INFO->{HTTPD_ROOT}/$conf";
+}
+
+my @includes = get_includes($conf);
+local $" = "\n";
+print "@includes\n";

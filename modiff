@@ -1,0 +1,56 @@
+#!/usr/bin/env perl
+# http://dren.ch/perl-module-diff/
+
+use strict;
+use integer;
+use warnings;
+
+sub inc {
+	my @v = `perl -V`;
+	my $keep;
+	my @r;
+
+	for (@v) {
+		chomp;
+		if ($keep) {
+			s/^\s+//;
+			s/\s+$//;
+			push @r, $_;
+		}
+		elsif (/^\s*\@INC:\s*$/) {
+			$keep = 1;
+		}
+	}
+
+	return @r;
+}
+
+my @dirs = inc();
+
+open(my $find, "find . -name '*.pm' |") || die $!;
+
+while (<$find>) {
+	chomp;
+
+	s#^\./##;
+	my $npm = $_;
+
+	s#^lib/##;
+	my $pm = $_;
+
+	my $installed;
+
+	foreach my $d (@dirs) {
+		if (-e "$d/$pm") {
+			$installed = "$d/$pm";
+			last;
+		}
+	}
+
+	if ($installed) {
+		system('diff', '-c', $installed, $npm);
+	}
+	else {
+		print "HEY: $npm not installed!\n";
+	}
+}
