@@ -23,11 +23,6 @@ sub find_httpd {
 	die "Unable to find httpd in @pd\n";
 }
 
-sub get_root {
-	my $httpd = find_httpd();
-	die $httpd;
-}
-
 sub get_httpd_info {
 	my $httpd = find_httpd();
 
@@ -56,9 +51,10 @@ sub get_includes {
 		while(<$h>) {
 			if (/^\s*Include\s+"?(.+?)"?$/i) {
 				my $c = $1;
-				if ($c !~ m{^/}) {
+				if ($c !~ m{^/}) { # it's relative
 					$c = "$HTTPD_INFO->{HTTPD_ROOT}/$c";
 				}
+				$c =~ s{/$}{/*}; # if it ends with / it's a wildcard dir
 				for (glob($c)) {
 					push @incs, get_includes($_);
 				}
