@@ -1,0 +1,54 @@
+#!/usr/bin/env perl
+
+use strict;
+use integer;
+use warnings;
+
+use HTML::TokeParser ();
+use LWP::UserAgent ();
+
+sub usage {
+    print "$0 print the latest version number of module on the CPAN\n";
+    print "usage: $0 Some::Perl::Module\n";
+    exit 111;
+}
+
+my $mod = shift || usage();
+
+$mod =~ s/::/-/gs;
+
+my $ua = LWP::UserAgent->new();
+
+my $url = "http://search.cpan.org/dist/$mod/";
+
+my $req = HTTP::Request->new(GET => $url);
+my $resp = $ua->request($req);
+
+if ($resp->is_error) {
+	die $resp->as_string();
+}
+
+my $doc = $resp->content();
+
+my $p = HTML::TokeParser->new(\$doc);
+
+while (my $tok = $p->get_token) {
+	my $type = shift @$tok;
+	next unless $type eq 'S';
+
+	my $tag = shift @$tok;
+	next unless $tag eq 'td';
+
+	my $attr = shift @$tok;
+	next unless $attr->{class} && $attr->{class} eq 'cell';
+
+	my $tt = $p->get_token;
+	next if $tt->[0] ne 'T';
+
+	if ($tt->[1] =~ /^$mod-(.+)$/) {
+		print "$1\n";
+		exit 1;
+	}
+}
+
+exit 0;
