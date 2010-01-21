@@ -1,5 +1,10 @@
 #!/usr/bin/env perl
 
+# This is part of the "futilities" collection
+# http://github.com/drench/futilities
+# Copyright 2009 Daniel Rench
+# MIT licensed; see the bundled LICENSE file
+
 use strict;
 use integer;
 use warnings;

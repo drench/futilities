@@ -1,7 +1,11 @@
 #!/usr/bin/env perl
 
-# This is public domain software.
-# More info: http://dren.ch/apache-config-finder/
+# This is part of the "futilities" collection
+# http://github.com/drench/futilities
+# Copyright 2008 Daniel Rench
+# MIT licensed; see the bundled LICENSE file
+
+# More specific info: http://dren.ch/apache-config-finder/
 
 use strict;
 

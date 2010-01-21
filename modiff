@@ -1,5 +1,11 @@
 #!/usr/bin/env perl
-# http://dren.ch/perl-module-diff/
+
+# This is part of the "futilities" collection
+# http://github.com/drench/futilities
+# Copyright 2008 Daniel Rench
+# MIT licensed; see the bundled LICENSE file
+
+# More specific info: http://dren.ch/perl-module-diff/
 
 use strict;
 use integer;

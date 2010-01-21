@@ -2,6 +2,10 @@
 #
 # weedagents: search & destroy dead ssh-agent sockets
 #
+# This is part of the "futilities" collection
+# http://github.com/drench/futilities
+# Copyright 2006 Daniel Rench
+# MIT licensed; see the bundled LICENSE file
 
 require 'socket'
 
