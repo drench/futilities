@@ -35,6 +35,28 @@ futilities
 
 	For a less coherent explanation: http://dren.ch/perl-module-diff/
 
+* ## timemachiner
+
+    Let's say you have a TODO list in a text file that you update a lot.
+    If you're running OS X's Time Machine, it has all your old versions,
+    but do you really want to use that crazy Star Wars interface to look
+    at them? Wouldn't you rather use git (and friends like tig)?
+
+    Timemachiner takes the Time Machine history of a single file, and
+    puts its complete history in its own git repository, forging the
+    commit dates to match Time Machine's backup times.
+
+    Example usage:
+
+    % timemachiner /Users/drench/TODO /Users/drench/gitified-TODO
+
+    Timemachiner figures out where your Time Machine backups are, and
+    will create the git repository if necessary.
+    You probably don't want to use this on an existing repo anyway.
+    Timemachiner has its own large, unwritten TODO list of its own.
+
+    Requires Ruby 1.something, OS X, and Time Machine.
+
 * ## weedagents
 
 	If you use ssh-agent, you probably have a bunch of dead agents in your

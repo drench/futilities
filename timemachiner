@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+
+# This is part of the "futilities" collection
+# http://github.com/drench/futilities
+# Copyright 2010 Daniel Rench
+# MIT licensed; see the bundled LICENSE file
+
+require 'ftools'
+require 'socket'
+require 'time'
+
+if ARGV.length < 2
+    print "Usage: #{$0} full_path_to_filename path_to_git_repo\n"
+    exit 111
+end
+
+
+def ts_root
+    Dir.glob('/Volumes/*/.com.apple.timemachine.supported').
+    map { |f| f.sub(%r{[^/]+$}, '') }.
+    find_all { |v| File.directory?("#{v}Backups.backupdb") }[0]
+end
+
+def hd_name
+    Dir.open('/Volumes/').
+    map { |f| ["/Volumes/#{f}",f] }.
+    find_all { |f| File.symlink?(f[0]) && (File.readlink(f[0]) == '/') }.
+    map { |f| f[1] }[0]
+end
+
+root = ts_root() + 'Backups.backupdb/' + Socket.gethostname.upcase
+
+path = hd_name() + ARGV[0]
+repo = ARGV[1]
+
+if ! File.directory?(repo)
+    Dir.mkdir(repo)
+    newrepo = true
+end
+
+Dir.chdir(repo)
+
+if ! File.directory?('.git')
+    Kernel.system('git init')
+    newrepo = true
+end
+
+Dir.glob("#{root}/*/#{path}").
+map { |f|
+    [
+        f,
+        f.match(%r{^#{root}/(\d{4}-\d\d-\d\d)-(\d\d)(\d\d)(\d\d)/#{path}})
+    ]
+}.
+find_all { |r| r[1] != nil }.
+map { |r|
+    m = r[1]
+    t = Time.parse(m[1] + ' ' + m[2] + ':' + m[3] + ':' + m[4])
+    [ r[0], t ]
+}.
+sort { |a,b| a[1] <=> b[1] }.each { |r|
+
+    File.copy(r[0], '.', true)
+    if newrepo
+        Kernel.system('git add .')
+        newrepo = false
+    end
+
+    ENV['GIT_AUTHOR_DATE'] = r[1].to_i.to_s
+    Kernel.system(
+        'git commit -a -m "Time Machine backup from ' + r[1].to_s + '"'
+    )
+}
