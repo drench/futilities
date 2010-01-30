@@ -5,8 +5,8 @@ futilities
 
 	Attemps to generate a list of all configuration files the local
 	Apache installation uses. Great when you're working on a new and/or
-	strange Apache installation. Requires Perl 5 with no extras,
-	and shell access to a server 
+	strange Apache installation. Requires Perl 5 with no extras, and
+	an urgent need to know the location of a mysterious RedirectMatch.
 
 	For more information: http://dren.ch/apache-config-finder/
 
