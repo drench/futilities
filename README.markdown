@@ -42,20 +42,20 @@ futilities
     but do you really want to use that crazy Star Wars interface to look
     at them? Wouldn't you rather use git (and friends like tig)?
 
-    Timemachiner takes the Time Machine history of a single file, and
-    puts its complete history in its own git repository, forging the
-    commit dates to match Time Machine's backup times.
+    Timemachiner figures out where your Time Machine backups are,
+    finds all the previous revisions of your file (the 1st argument), and
+    commits them to a git repository (the 2nd argument), creating the
+    repo if necessary (you probably don't want to use this on an existing
+    repo anyway). Timemachiner also forges the commit timestamps to match
+    Time Machine's backup times.
 
     Example usage:
 
     % timemachiner /Users/drench/TODO /Users/drench/gitified-TODO
 
-    Timemachiner figures out where your Time Machine backups are, and
-    will create the git repository if necessary.
-    You probably don't want to use this on an existing repo anyway.
     Timemachiner has its own large, unwritten TODO list of its own.
 
-    Requires Ruby 1.something, OS X, and Time Machine.
+    Requires OS X, Ruby 1.whatever-ships-with-OS X, Time Machine, and git.
 
 * ## weedagents
 
