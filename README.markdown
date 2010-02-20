@@ -35,6 +35,25 @@ futilities
 
 	For a less coherent explanation: http://dren.ch/perl-module-diff/
 
+* ## phpmyadmin-backup
+
+    MySQL and PHP can be bad enough all by themselves.
+
+    But add a web host that won't allow shell access (lame) or
+    direct connections to port 3306 (understandable, but inconvenient),
+    and there's no nice way to do automated backups.
+
+    I found a Python script to pull backups through phpMyAdmin, but it has
+    some problems. The big one is that Python's urllib2 honors robots.txt,
+    and the server I needed to back up had "Disallow: /" in it.
+    10 minutes of googling later, I still did not know to override this
+    so I decided to write my own version, not in Python.
+
+    I thought about writing it in Ruby, but "gem install mechanize"
+    did not go well (apparently it can't find libxslt) so Perl it is.
+
+    Requires Perl 5, WWW::Mechanize, and restricted access to "your" server.
+
 * ## timemachiner
 
     Let's say you have a TODO list in a text file that you update a lot.
