@@ -1,0 +1,62 @@
+#!/usr/bin/env perl
+
+# This is part of the "futilities" collection
+# http://github.com/drench/futilities
+# Copyright 2010 Daniel Rench
+# MIT licensed; see the bundled LICENSE file
+
+use strict;
+use integer;
+use warnings;
+
+use Getopt::Long 'GetOptions';
+use WWW::Mechanize ();
+
+my ($url, $dbname, $username, $password) = ('', '', '', '');
+
+GetOptions(
+    'dbname=s'   => \$dbname,
+    'url=s'      => \$url,
+    'username=s' => \$username,
+    'password=s' => \$password,
+) || usage();
+
+usage() if
+    ($url !~ m{^https?://}) ||
+    (!length $dbname) ||
+    (!length $username) ||
+    (!length $password);
+
+sub usage {
+    print "Usage: $0 --url=X --dbname=X --username=X --password=X > BACKUP.sql.gz\n";
+    exit 111;
+}
+
+my $mech = WWW::Mechanize->new();
+
+$mech->get($url);
+
+$mech->submit_form(
+    form_name => 'login_form',
+    fields    => {
+        pma_username => $username,
+        pma_password => $password,
+    },
+);
+
+$mech->get( $mech->find_link(id => 'frame_navigation') );
+$mech->get( $mech->find_link(text_regex => qr{^\Q$dbname\E\s\(\d+\)}) );
+$mech->get( $mech->find_link(id => 'frame_content') );
+$mech->get( $mech->find_link(text_regex => qr{\bExport$}) );
+
+my $resp = $mech->submit_form(
+    form_name => 'dump',
+    fields    => {
+        db          => $dbname,
+        what        => 'sql',
+        asfile      => 'sendit',
+        compression => 'gzip',
+    },
+);
+
+print $resp->content();
