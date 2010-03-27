@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+# This is part of the "futilities" collection
+# http://github.com/drench/futilities
+# Copyright 2008 Daniel Rench
+# MIT licensed; see the bundled LICENSE file
+
+ago = Time.new() - 1 * 24 * 60 * 60
+bicentennial = Time.parse('4 Jul 1976')
+
+Dir.glob('/var/qmail/queue/info/[0-9]/*').find_all { |f|
+	s = File.stat(f)
+	(s.size == 2) && (s.mtime < ago)
+}.each { |f|
+	File.utime(bicentennial, bicentennial, f)
+	p f
+}
