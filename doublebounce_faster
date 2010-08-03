@@ -5,6 +5,8 @@
 # Copyright 2008 Daniel Rench
 # MIT licensed; see the bundled LICENSE file
 
+require 'time'
+
 ago = Time.new() - 1 * 24 * 60 * 60
 bicentennial = Time.parse('4 Jul 1976')
 
