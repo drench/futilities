@@ -1,0 +1,26 @@
+#!/usr/bin/env perl
+
+use integer;
+use strict;
+use warnings;
+
+use Net::SSLeay ();
+
+my $host = shift || die "Usage: $0 hostname [port]\n";
+my $port = shift || 443;
+
+my $cert = (Net::SSLeay::sslcat($host, $port, q{}))[2];
+
+if (defined $cert) {
+    printf "%s:%d:\nNot before: %s\nNot after:  %s\n",
+        $host, $port,
+        Net::SSLeay::P_ASN1_UTCTIME_put2string(
+                Net::SSLeay::X509_get_notBefore($cert)
+            ),
+        Net::SSLeay::P_ASN1_UTCTIME_put2string(
+                Net::SSLeay::X509_get_notAfter($cert)
+            );
+}
+else {
+    die "couldn't get info about the cert at $host:$port\n";
+}

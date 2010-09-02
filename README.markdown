@@ -73,6 +73,27 @@ futilities
 
     Requires Perl 5, WWW::Mechanize, and restricted access to "your" server.
 
+* ## ssldates
+
+    How do you know when an SSL certificate is due to expire?
+
+    Do you point your browser at the site, click the little "lock" icon,
+    and examine the certificate info? Or do you just wait until people
+    start complaining that your site is giving them a scary security
+    warning the morning after?
+
+    No, silly, you use ssldates!
+
+    I know what you're going to ask: "Hey, what about SSL services that
+    are not HTTP? Can you check those, too smart guy? These are CRITICAL
+    for my ENTERPRISE! FIVE NINES!"
+
+    I have SSL certificates on non-HTTP services such as POP3, IMAP4, and
+    SMTP and I can assure you ssldates works on these too.
+
+    Requires Perl 5 with the Net::SSLeay module and a proactive attitude,
+    I guess.
+
 * ## timemachiner
 
     Let's say you have a TODO list in a text file that you update a lot.
