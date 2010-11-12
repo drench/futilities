@@ -5,6 +5,8 @@
 # Copyright 2010 Daniel Rench
 # MIT licensed; see the bundled LICENSE file
 
+# More specific info: http://dren.ch/phpmyadmin-backup/
+
 use strict;
 use integer;
 use warnings;

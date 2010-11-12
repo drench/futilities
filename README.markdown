@@ -73,6 +73,8 @@ futilities
 
     Requires Perl 5, WWW::Mechanize, and restricted access to "your" server.
 
+    For slightly more detail: http://dren.ch/phpmyadmin-backup/
+
 * ## ssldates
 
     How do you know when an SSL certificate is due to expire?
