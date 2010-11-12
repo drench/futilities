@@ -12,14 +12,23 @@ use warnings;
 use Getopt::Long 'GetOptions';
 use WWW::Mechanize ();
 
-my ($url, $dbname, $username, $password) = ('', '', '', '');
+my ($url, $dbname, $username, $password, $wp_conf) = ('', '', '', '', '');
 
 GetOptions(
     'dbname=s'   => \$dbname,
     'url=s'      => \$url,
     'username=s' => \$username,
     'password=s' => \$password,
+    'wp_conf=s'  => \$wp_conf,
 ) || usage();
+
+if (length $wp_conf) {
+    my $dbinfo = get_wp_conf($wp_conf);
+
+    $dbname   = $dbinfo->{NAME};
+    $password = $dbinfo->{PASSWORD};
+    $username = $dbinfo->{USER};
+}
 
 usage() if
     ($url !~ m{^https?://}) ||
@@ -29,7 +38,29 @@ usage() if
 
 sub usage {
     print "Usage: $0 --url=X --dbname=X --username=X --password=X > BACKUP.sql.gz\n";
+    print "or: $0 --url=X --wp_conf=/path/to/wp-config.php > BACKUP.sql.gz\n";
     exit 111;
+}
+
+sub get_wp_conf {
+    use IPC::Open2 ();
+    my $cf = shift;
+    open(my $h, '<', $cf) || die "open $cf: $!";
+
+    my $defs = join q{}, grep { /^define/ } <$h>;
+
+    my($rh, $wh);
+    my $pid = IPC::Open2::open2($rh, $wh, 'php');
+
+    print $wh "<?php $defs ";
+    for (qw(NAME PASSWORD USER)) {
+        print $wh qq{echo "$_=" . DB_$_ . "\n";};
+    }
+    close $wh;
+
+    my %dbinfo = map { chomp; split /=/, $_, 2 } <$rh>;
+
+    return \%dbinfo;
 }
 
 my $mech = WWW::Mechanize->new();
