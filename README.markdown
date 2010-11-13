@@ -8,7 +8,7 @@ futilities
 	strange Apache installation. Requires Perl 5 with no extras, and
 	an urgent need to know the location of a mysterious RedirectMatch.
 
-	For more information: http://dren.ch/apache-config-finder/
+	For more information: [http://dren.ch/apache-config-finder/](http://dren.ch/apache-config-finder/)
 
 * ## cpansion
 
@@ -52,7 +52,7 @@ futilities
 
 	Requires Perl 5 and skepticism.
 
-	For a less coherent explanation: http://dren.ch/perl-module-diff/
+	For a less coherent explanation: [http://dren.ch/perl-module-diff/](http://dren.ch/perl-module-diff/)
 
 * ## phpmyadmin-backup
 
@@ -73,7 +73,7 @@ futilities
 
     Requires Perl 5, WWW::Mechanize, and restricted access to "your" server.
 
-    For slightly more detail: http://dren.ch/phpmyadmin-backup/
+    For slightly more detail: [http://dren.ch/phpmyadmin-backup/](http://dren.ch/phpmyadmin-backup/)
 
 * ## ssldates
 
