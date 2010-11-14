@@ -9,6 +9,7 @@ use strict;
 use integer;
 use warnings;
 
+use HTML::Entities ();
 use HTML::TokeParser ();
 use LWP::UserAgent ();
 
@@ -50,7 +51,9 @@ while (my $tok = $p->get_token) {
 	my $tt = $p->get_token;
 	next if $tt->[0] ne 'T';
 
-	if ($tt->[1] =~ /^$mod-(.+)$/) {
+	my $mv = HTML::Entities::decode_entities($tt->[1]);
+
+	if ($mv =~ /^$mod-(.+)$/) {
 		print "$1\n";
 		exit 1;
 	}
