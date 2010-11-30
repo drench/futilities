@@ -1,0 +1,70 @@
+#!/usr/bin/env perl
+
+# This is part of the "futilities" collection
+# http://github.com/drench/futilities
+# Copyright 2010 Daniel Rench
+# MIT licensed; see the bundled LICENSE file
+
+use strict;
+use integer;
+use warnings;
+
+use Getopt::Long 'GetOptions';
+
+my $wp_conf;
+my $exec;
+
+GetOptions('exec=s' => \$exec, 'wp_conf=s' => \$wp_conf) || usage();
+
+$exec = 'mysql' if ! length $exec;
+
+my $dbinfo = get_wp_conf($wp_conf);
+
+for(qw(NAME PASSWORD USER HOST)) {
+    if (! length $dbinfo->{$_}) {
+        warn "Can't derive $_ from this Wordpress config!\n";
+        usage();
+    }
+}
+
+exec(
+    $exec,
+        '-u', $dbinfo->{USER},
+        "--password=$dbinfo->{PASSWORD}",
+        '-h', $dbinfo->{HOST},
+        $dbinfo->{NAME},
+        @ARGV,
+);
+
+sub usage {
+    print "Usage: $0 [ --exec=program ] [ --wp_conf=/path/to/wp-config.php ]\n";
+    exit 111;
+}
+
+sub get_wp_conf {
+    use IPC::Open2 ();
+    my $cf = shift || './';
+
+# TODO: if there's no wp-config.php here, try parent directories
+
+    if (-d $cf) {
+        $cf .= '/wp-config.php';
+    }
+
+    open(my $h, '<', $cf) || die "open $cf: $!";
+
+    my $defs = join q{}, grep { /^define/ } <$h>;
+
+    my($rh, $wh);
+    my $pid = IPC::Open2::open2($rh, $wh, 'php');
+
+    print $wh "<?php $defs ";
+    for (qw(NAME PASSWORD USER HOST)) {
+        print $wh qq{echo "$_=" . DB_$_ . "\n";};
+    }
+    close $wh;
+
+    my %dbinfo = map { chomp; split /=/, $_, 2 } <$rh>;
+
+    return \%dbinfo;
+}

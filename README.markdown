@@ -125,3 +125,37 @@ futilities
 
 	Requires Ruby 1.something (1.8 will do) and a system that doesn't clean
 	/tmp enough to your liking.
+
+* ## wpdb
+
+    If you work on several different Wordpress sites, you may want wpdb.
+    Even if you only work on a single Wordpress site, you may want wpdb.
+
+    wpdb is a wrapper around mysql that looks in your working directory for
+    a 'wp-config.php' file. If it finds one, it grabs the host name,
+    database name, username and password for it and executes mysql, saving
+    you time and money (or maybe just time, if you're doing it fixed-rate
+    or worse, gratis).
+
+    Example:
+
+    % cd /path/to/some/wordpress/site
+    % echo "show tables;" | wpdb
+
+    But that's not all! It will run mysqldump instead if you ask it to:
+
+    % cd /path/to/some/wordpress/site
+    % wpdb --exec=mysqldump > /tmp/wp-snapshot.sql
+
+    You can also point it at a Wordpress install in another directory:
+
+    % wpdb --wp_conf=/path/to/another/wordpress/site
+
+    wpdb will pass on any extra arguments you specify on to mysql too:
+
+    % wpdb --i-am-a-dummy
+
+    I wrote this in Perl because I lifted the bulk of it from
+    phpmyadmin-backup (see above).
+
+    Requires Perl 5, little patience, and little else.
