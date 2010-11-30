@@ -151,7 +151,7 @@ futilities
 
         % wpdb --wp_conf=/path/to/another/wordpress/site
 
-    wpdb will pass on any extra arguments you specify on to mysql too:
+    wpdb will pass on any extra arguments you specify to mysql too:
 
         % wpdb --i-am-a-dummy
 
