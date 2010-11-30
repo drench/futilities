@@ -112,7 +112,7 @@ futilities
 
     Example usage:
 
-    % timemachiner /Users/drench/TODO /Users/drench/gitified-TODO
+        % timemachiner /Users/drench/TODO /Users/drench/gitified-TODO
 
     Timemachiner has its own large, unwritten TODO list of its own.
 
@@ -139,21 +139,21 @@ futilities
 
     Example:
 
-    % cd /path/to/some/wordpress/site
-    % echo "show tables;" | wpdb
+        % cd /path/to/some/wordpress/site
+        % echo "show tables;" | wpdb
 
     But that's not all! It will run mysqldump instead if you ask it to:
 
-    % cd /path/to/some/wordpress/site
-    % wpdb --exec=mysqldump > /tmp/wp-snapshot.sql
+        % cd /path/to/some/wordpress/site
+        % wpdb --exec=mysqldump > /tmp/wp-snapshot.sql
 
     You can also point it at a Wordpress install in another directory:
 
-    % wpdb --wp_conf=/path/to/another/wordpress/site
+        % wpdb --wp_conf=/path/to/another/wordpress/site
 
     wpdb will pass on any extra arguments you specify on to mysql too:
 
-    % wpdb --i-am-a-dummy
+        % wpdb --i-am-a-dummy
 
     I wrote this in Perl because I lifted the bulk of it from
     phpmyadmin-backup (see above).
