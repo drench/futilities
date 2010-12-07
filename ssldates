@@ -1,4 +1,10 @@
 #!/usr/bin/env perl
+# ssldates displays the start and end dates of SSL certificates
+#
+# This is part of the "futilities" collection
+# http://github.com/drench/futilities
+# Copyright 2005 Daniel Rench
+# MIT licensed; see the bundled LICENSE file
 
 use integer;
 use strict;
