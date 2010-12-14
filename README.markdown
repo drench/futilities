@@ -131,23 +131,28 @@ futilities
     If you work on several different Wordpress sites, you may want wpdb.
     Even if you only work on a single Wordpress site, you may want wpdb.
 
-    wpdb is a wrapper around mysql that looks in your working directory for
-    a 'wp-config.php' file. If it finds one, it grabs the host name,
-    database name, username and password for it and executes mysql, saving
-    you time and money (or maybe just time, if you're doing it fixed-rate
-    or worse, gratis).
+    wpdb is a wrapper around mysql that looks in (and around!) your working
+    directory for a 'wp-config.php' file. If it finds one, it grabs the host
+    name, database name, username and password for it and executes mysql,
+    saving you time and/or money (or maybe just time, if you're doing it
+    fixed-rate or worse, gratis).
 
     Example:
 
         % cd /path/to/some/wordpress/site
         % echo "show tables;" | wpdb
 
+    Look, you don't even have to be in the root directory:
+
+        % cd /path/to/some/wordpress/site/wp-admin/css
+        % echo "select count(*) from wp_users" | wpdb
+
     But that's not all! It will run mysqldump instead if you ask it to:
 
-        % cd /path/to/some/wordpress/site
+        % cd /path/to/some/wordpress/site/wp-includes/js/tinymce
         % wpdb --exec=mysqldump > /tmp/wp-snapshot.sql
 
-    You can also point it at a Wordpress install in another directory:
+    You can also explicitly point at a Wordpress install in another directory:
 
         % wpdb --wp_conf=/path/to/another/wordpress/site
 

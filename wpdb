@@ -43,9 +43,14 @@ sub usage {
 
 sub get_wp_conf {
     use IPC::Open2 ();
-    my $cf = shift || './';
+    my $cf = shift;
 
-# TODO: if there's no wp-config.php here, try parent directories
+    # if the working dir is somewhere inside a WP tree, try to find wp-config
+    if (! $cf) {
+        use Cwd ();
+        $cf = Cwd::getcwd();
+        $cf =~ s{/wp-(admin|content|includes)\b.*}{/}x;
+    }
 
     if (-d $cf) {
         $cf .= '/wp-config.php';
