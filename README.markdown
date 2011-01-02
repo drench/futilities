@@ -40,6 +40,30 @@ futilities
 	Requires Ruby 1.something and a qmail installation with a queue
 	overflowing with crap.
 
+* ## flac2mp3
+
+    I sometimes want to convert a directory of flacs into mp3s.
+    Maybe you do too.
+
+    Flac2mp3 expects to find flac and lame executables in your $PATH.
+    It also expects your flac files to begin with numbers (and uses
+    them to set id3 track numbers in the mp3 files).
+
+    The call to lame uses parameters that I've read are decent
+    and they sound all right to me: "-V2 --vbr-new -q0 --lowpass 19.7".
+
+    Also any arguments you specify on the flac2mp3 command line are passed
+    straight to lame, so you might find yourself wanting to tack on
+    "--ta" (artist), "--tl" (album), "--ty" (year) and/or "--tg" (genre).
+
+    When flac2mp3 finishes, you're left with not just mp3s, but also
+    uncompressed wavs and of course the original flacs.
+    I thought about having it remove the wav files automatically,
+    but sometimes I want them, like when I want burn a CD.
+    So "rm *.wav" if it really bothers you.
+
+    Requires ruby, flac, lame, and above-board flac files.
+
 * ## modiff
 
 	Your version control system is happy to tell you how your working

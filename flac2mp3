@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+# This is part of the "futilities" collection
+# https://github.com/drench/futilities
+# Copyright 2009 Daniel Rench
+# MIT licensed; see the bundled LICENSE file
+
+# This expects 'flac' and 'lame' to be in your $PATH
+
+# Typical usage:
+# % cd /some/dir/with/flacs
+# % flac2mp3 --ta 'Ancient Greeks' --tl 'Departure Suite' --ty 2005 --tg 17
+
+Dir.glob('*.flac').each { |flac|
+
+    m = /^(\d+)\s*\W+\s*(.+)\.flac$/.match(flac)
+    n = m[1].to_i
+    t = m[2]
+
+    Kernel.system('flac', '-d', flac)
+
+    base = flac.sub(/\.flac$/, '')
+
+    args = ['lame', "#{base}.wav", "#{base}.mp3", '-V2',
+        '--vbr-new', '-q0', '--lowpass', '19.7',
+        '--tt', t, '--tn', n.to_s]
+
+    ARGV.each { |a| args.push(a) }
+
+    Kernel.system(*args)
+}
