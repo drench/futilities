@@ -14,7 +14,7 @@ use warnings;
 use Getopt::Long 'GetOptions';
 use WWW::Mechanize ();
 
-my ($url, $dbname, $username, $password, $wp_conf) = ('', '', '', '', '');
+my ($url, $dbname, $username, $password, $wp_conf, $basicauth) = ('', '', '', '', '', 0);
 
 GetOptions(
     'dbname=s'   => \$dbname,
@@ -22,6 +22,7 @@ GetOptions(
     'username=s' => \$username,
     'password=s' => \$password,
     'wp_conf=s'  => \$wp_conf,
+    'basicauth'  => \$basicauth,
 ) || usage();
 
 if (length $wp_conf) {
@@ -41,6 +42,7 @@ usage() if
 sub usage {
     print "Usage: $0 --url=X --dbname=X --username=X --password=X > BACKUP.sql.gz\n";
     print "or: $0 --url=X --wp_conf=/path/to/wp-config.php > BACKUP.sql.gz\n";
+    print "Optional: --basicauth for HTTP authentication instead of phpmyadmin form\n";
     exit 111;
 }
 
@@ -67,15 +69,19 @@ sub get_wp_conf {
 
 my $mech = WWW::Mechanize->new();
 
+$mech->credentials( $username, $password ) if $basicauth;
+
 $mech->get($url);
 
-$mech->submit_form(
-    form_name => 'login_form',
-    fields    => {
-        pma_username => $username,
-        pma_password => $password,
-    },
-);
+if (!$basicauth) {
+    $mech->submit_form(
+        form_name => 'login_form',
+        fields    => {
+            pma_username => $username,
+            pma_password => $password,
+        },
+    );
+}
 
 $mech->get( $mech->find_link(id => 'frame_navigation') );
 $mech->get( $mech->find_link(text_regex => qr{^\Q$dbname\E\s\(\d+\)}) );
