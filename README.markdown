@@ -10,6 +10,17 @@ futilities
 
 	For more information: [http://dren.ch/apache-config-finder/](http://dren.ch/apache-config-finder/)
 
+* ## alac2mp3
+
+    When I buy music from Bandcamp, I choose Apple Lossless, since, unlike FLAC,
+    iTunes can play the format. Since I have devices that won't play ALAC, I
+    want mp3 format as well. I can make iTunes do the conversion, but it's
+    no fun at all, so I wrote alac2mp3. I haven't tried, but this thing may
+    also convert AAC (iTunes store) format files to mp3 as well.
+
+    Requires `afconvert` (standard on OS X), `lame`, Ruby with the taglib gem,
+    and ALACs.
+
 * ## cpansion
 
 	If you, like me, find yourself on the edge of your seat awaiting

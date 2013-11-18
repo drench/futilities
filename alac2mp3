@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+require "taglib"
+require "tempfile"
+
+TAG_PROPERTIES = [ :album, :artist, :comment, :genre, :title, :track, :year ]
+
+def tags_for(filename)
+  h = {}
+  TagLib::FileRef.open(filename) do |file|
+    TAG_PROPERTIES.each do |prop|
+      h[prop] = file.tag.send(prop)
+    end
+  end
+  h
+end
+
+def convert_to_wav(original, wav)
+  system("afconvert", "--file", "WAVE", "--data", "LEI16", original, wav)
+end
+
+def wav_to_mp3(wav, mp3, tags)
+  args = ["lame", wav, mp3, "-V2", "--vbr-new", "-q0", "--lowpass", "19.7"]
+  args.push("--tt", tags[:title]) if tags[:title]
+  args.push("--ta", tags[:artist]) if tags[:artist]
+  args.push("--tl", tags[:album]) if tags[:album]
+  args.push("--ty", tags[:year].to_s) if tags[:year]
+  args.push("--tn", tags[:track].to_s) if tags[:track]
+  args.push("--tc", tags[:comment]) if tags[:comment]
+  args.push("--tg", tags[:genre]) if tags[:genre]
+  system(*args)
+end
+
+ARGV.each do |original|
+  ext = File.extname(original)
+  base = File.basename(original, ext)
+  mp3 = "#{base}.mp3"
+  wav_file = Tempfile.new([base, "XXXXXX.wav"], ".")
+  convert_to_wav(original, wav_file.path)
+  wav_file.close
+  wav_to_mp3(wav_file.path, mp3, tags_for(original))
+  wav_file.unlink
+end
