@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -z "$1" ]; then
+  echo 'Missing a username argument!' > /dev/stderr
+  exit 111
+else
+  curl --silent https://twitter.com/$1 | pup '.ProfileNav attr{data-user-id}'
+fi
